@@ -6,6 +6,6 @@ public class RaceTrack {
     public Vector2 startPos;
 
     public RaceTrack(){
-        startPos = new Vector2(ScreenUtils.getFrameBufferTexture().getRegionWidth()/2f, ScreenUtils.getFrameBufferTexture().getRegionHeight()/2f);
+        startPos = new Vector2(30, 15);
     }
 }
