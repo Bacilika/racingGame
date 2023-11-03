@@ -14,7 +14,7 @@ public class GameScreen implements Screen {
     public GameScreen(final RacingGame game){
         this.game = game;
         batch = game.batch;
-        car = new Car(batch,"badlogic.jpg",game);
+        car = new Car(batch, "car.png", game);
     }
 
     @Override
