@@ -8,13 +8,13 @@ public class RacingGame extends Game {
 	public SpriteBatch batch;
 	public Color clearColor;
 	public RaceTrack currentTrack;
-	
+	public GameScreen gameScreen;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		clearColor = new Color(79/255f, 132/255f, 36/255f, 1);
 		currentTrack = new RaceTrack();
-
 		this.setScreen(new GameScreen(this));
 	}
 
@@ -26,5 +26,8 @@ public class RacingGame extends Game {
 	@Override
 	public void dispose () {
 		batch.dispose();
+		if(gameScreen != null){
+			gameScreen.dispose();
+		}
 	}
 }
