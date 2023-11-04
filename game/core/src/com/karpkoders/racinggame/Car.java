@@ -18,10 +18,8 @@ public class Car extends PhysicsObject{
     private Vector2 vel;
     private float offset;
 
-
     public Car(final SpriteBatch batch, String textureName, GameScreen gameScreen){
         super(gameScreen, BodyDef.BodyType.DynamicBody,new Vector2(30,15), new Vector2(64*Constants.PMR, 64*Constants.PMR));
-
         this.batch = batch;
         Texture texture = new Texture(Gdx.files.internal(textureName));
         textureRegion = new TextureRegion(texture, 32,32);
@@ -30,12 +28,13 @@ public class Car extends PhysicsObject{
         currentTrack = gameScreen.game.currentTrack;
 
         // Physics setup
-        bodyDef.angularDamping = 0.01f;
+        bodyDef.angularDamping = 0.9f;
+        bodyDef.linearDamping = 0.9f;
         createBody();
         body.setUserData(this);
 
-        fixtureDef.density = 0.5f;
-        fixtureDef.friction = 2f;
+        fixtureDef.density = 1f;
+        fixtureDef.friction = 0.9f;
         fixtureDef.restitution = 0.0f;
         createFixtures();
         fixture.setUserData(this);
@@ -44,23 +43,50 @@ public class Car extends PhysicsObject{
 
     public void render(float delta){
         batch.draw(textureRegion, pos.x-offset, pos.y-offset, origin.x, origin.y, size.x, size.y, 1, 1, rotation-90);
+        vel = body.getLinearVelocity();
         readInput();
+        if(Math.abs(body.getAngularVelocity()) > 0.3) {applyCentripetalForce();}
     }
+    private float getBodyAngle(){
+        float angle = body.getAngle()*MathUtils.radiansToDegrees%360;
+        if(angle <0){
+            angle = 360 + angle;
+        }
+        return angle;
+    }
+
+    private void applyCentripetalForce(){
+        float speed = body.getLinearVelocity().len();
+        float centripetalForce = body.getMass()*speed;
+        float centripetalAngle = getBodyAngle()+90;
+        if(body.getAngularVelocity() < 0){
+            centripetalAngle = getBodyAngle()-90;
+        }
+        Vector2 centripetalVector = new Vector2(MathUtils.cosDeg(centripetalAngle)*centripetalForce,MathUtils.sinDeg(centripetalAngle)*centripetalForce);
+        body.applyForceToCenter(centripetalVector,true);
+    }
+
+    public void debugRender(){
+        Debug.print(gameScreen,"Angular Vel: " +body.getAngularVelocity());
+        Debug.print(gameScreen,"Body Angle: " + getBodyAngle());
+    }
+
     private void readInput(){
         float cosx = MathUtils.cosDeg(body.getAngle()*MathUtils.radiansToDegrees);
         float siny = MathUtils.sinDeg(body.getAngle()*MathUtils.radiansToDegrees);
         if (Gdx.input.isKeyPressed(Input.Keys.W) && vel.x > -MAX_VELOCITY) {
-            body.applyForce(20*cosx, 20*siny, pos.x, pos.y, true);
+            body.applyForceToCenter(50*cosx, 50*siny, true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S) && vel.x < MAX_VELOCITY) {
-            body.applyForce(-20*cosx, -20f*siny, pos.x, pos.y, true);
+            body.applyForceToCenter(-10*cosx, -10f*siny, true);
         }
+
         if (Gdx.input.isKeyPressed(Input.Keys.A) && vel.x > -MAX_VELOCITY) {
-            body.applyAngularImpulse(0.01f,true);
+            body.applyAngularImpulse(0.1f, true);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D) && vel.x < MAX_VELOCITY) {
-            body.applyAngularImpulse(-0.01f,true);
+            body.applyAngularImpulse(-0.1f,true);
         }
     }
 }

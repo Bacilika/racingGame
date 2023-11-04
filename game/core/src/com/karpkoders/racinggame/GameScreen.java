@@ -28,6 +28,7 @@ public class GameScreen implements Screen {
         car = new Car(batch, "car.png", this);
         bodies = new Array<>();
         game.gameScreen = this;
+        debugRenderer.setDrawVelocities(true);
     }
 
     @Override
@@ -36,6 +37,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(game.clearColor);
+        Debug.printablePos.set(0,10);
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
@@ -49,9 +51,14 @@ public class GameScreen implements Screen {
                 car.rotation = MathUtils.radiansToDegrees * body.getAngle();
             }
         }
-
         batch.begin();
         car.render(delta);
+        batch.end();
+
+        game.UICamera.update();
+        batch.setProjectionMatrix(game.UICamera.combined);
+        batch.begin();
+        car.debugRender();
         batch.end();
 
         world.step(1/60f,6,2);
