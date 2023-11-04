@@ -19,7 +19,8 @@ public class Car extends PhysicsObject{
     private float offset;
 
 
-    public Car(final SpriteBatch batch, String textureName, RacingGame game){
+    public Car(final SpriteBatch batch, String textureName, GameScreen gameScreen){
+        super(gameScreen, BodyDef.BodyType.DynamicBody,new Vector2(30,15), new Vector2(64*Constants.PMR, 64*Constants.PMR));
 
         this.batch = batch;
         Texture texture = new Texture(Gdx.files.internal(textureName));
@@ -42,7 +43,8 @@ public class Car extends PhysicsObject{
     }
 
     public void render(float delta){
-        batch.draw(texture,hitbox.x-offset,hitbox.y-offset, hitbox.width,hitbox.height);
+        batch.draw(textureRegion, pos.x-offset, pos.y-offset, origin.x, origin.y, size.x, size.y, 1, 1, rotation-90);
+        readInput();
     }
     private void readInput(){
         float cosx = MathUtils.cosDeg(body.getAngle()*MathUtils.radiansToDegrees);

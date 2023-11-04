@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen implements Screen {
 
-    private final RacingGame game;
+    public final RacingGame game;
     private final SpriteBatch batch;
     private final Car car;
     private final Array<Body> bodies;
