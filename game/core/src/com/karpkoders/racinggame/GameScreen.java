@@ -32,7 +32,19 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void show() {}
+    public void show() {
+        Float thickness = 0.5f;
+        Float width = camera.viewportWidth;
+        Float height = camera.viewportHeight;
+        // North wall
+        new PhysicsWall(this, new Vector2(width/2,height-thickness/2), width, thickness);
+        // East wall
+        new PhysicsWall(this, new Vector2(width-thickness/2,height/2), thickness, height);
+        // South wall
+        new PhysicsWall(this, new Vector2(width/2,thickness/2), width, thickness);
+        // West wall
+        new PhysicsWall(this, new Vector2(thickness/2,height/2), thickness, height);
+    }
 
     @Override
     public void render(float delta) {

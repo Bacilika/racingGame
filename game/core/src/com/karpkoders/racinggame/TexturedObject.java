@@ -24,30 +24,23 @@ public abstract class TexturedObject {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
 
-        Texture texture = new Texture(Gdx.files.internal(texturePath));
-        textureRegion = new TextureRegion(texture);
+        if(texturePath != null){
+            Texture texture = new Texture(Gdx.files.internal(texturePath));
+            textureRegion = new TextureRegion(texture);
+        }
+        else {
+            textureRegion = null;
+        }
 
         offsetX = sizeX/2;
         offsetY = sizeY/2;
 
         position = initialPosition;
         rotation = 0;
-
     }
 
     public TexturedObject(TexturedObjParams o){
-        this.batch = o.batch;
-        this.sizeX = o.sizeX;
-        this.sizeY = o.sizeY;
-
-        Texture texture = new Texture(Gdx.files.internal(o.texturePath));
-        textureRegion = new TextureRegion(texture);
-
-        offsetX = sizeX/2;
-        offsetY = sizeY/2;
-
-        position = o.initialPosition;
-        rotation = 0;
+        this(o.batch, o.texturePath, o.sizeX, o.sizeY, o.initialPosition);
     }
     //endregion
 
@@ -89,10 +82,12 @@ public abstract class TexturedObject {
 
     //region Methods
     public void render(float delta){
-        batch.draw(textureRegion,
-                GetOriginPos().x, GetOriginPos().y,
-                GetOriginX(), GetOriginY(),
-                sizeX, sizeY, 1, 1, rotation);
+        if(textureRegion != null){
+            batch.draw(textureRegion,
+                    GetOriginPos().x, GetOriginPos().y,
+                    GetOriginX(), GetOriginY(),
+                    sizeX, sizeY, 1, 1, rotation);
+        }
     }
     //endregion
 }
