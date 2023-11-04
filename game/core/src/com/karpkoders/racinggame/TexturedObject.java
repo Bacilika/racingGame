@@ -46,7 +46,7 @@ public abstract class TexturedObject {
 
     //region Parameter Container
     public static class TexturedObjParams{
-        public static SpriteBatch batch;
+        public SpriteBatch batch;
         public String texturePath;
         public float sizeX;
         public float sizeY;
