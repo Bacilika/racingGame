@@ -1,7 +1,5 @@
 package com.karpkoders.racinggame;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 public abstract class PhysicsObject extends TexturedObject{
@@ -19,9 +17,9 @@ public abstract class PhysicsObject extends TexturedObject{
         bodyDef = new BodyDef();
         bodyDef.type = bodyType;
         bodyDef.position.set(position);
-        bodyDef.angle = MathUtils.PI/2f;
+        bodyDef.angle = 0;
         shape = new PolygonShape();
-        shape.setAsBox(sizeX/2, sizeY/2);
+        shape.setAsBox(sizeX/2, sizeY/3);
         fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
 

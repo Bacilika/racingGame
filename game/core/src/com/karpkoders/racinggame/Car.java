@@ -11,6 +11,7 @@ public class Car extends PhysicsObject{
     private final RaceTrack currentTrack;
     private final int MAX_VELOCITY = 1000;
     private Vector2 vel;
+    private Boolean reversing = false;
 
 
     public Car(final SpriteBatch batch, String textureName, GameScreen gameScreen){
@@ -51,9 +52,19 @@ public class Car extends PhysicsObject{
         float speed = body.getLinearVelocity().len();
         float centripetalForce = body.getMass()*speed;
         float centripetalAngle = getBodyAngle()+90;
-        if(body.getAngularVelocity() < 0){
+        if(body.getAngularVelocity() < 0 && !reversing){
             centripetalAngle = getBodyAngle()-90;
         }
+        else if(body.getAngularVelocity() < 0 && reversing){
+            centripetalAngle = getBodyAngle()+90;
+        }
+        else if(body.getAngularVelocity() > 0 && !reversing){
+            centripetalAngle = getBodyAngle()+90;
+        }
+        else if(body.getAngularVelocity() > 0 && reversing){
+            centripetalAngle = getBodyAngle()-90;
+        }
+
         Vector2 centripetalVector = new Vector2(MathUtils.cosDeg(centripetalAngle)*centripetalForce,MathUtils.sinDeg(centripetalAngle)*centripetalForce);
         body.applyForceToCenter(centripetalVector,true);
     }
@@ -61,23 +72,27 @@ public class Car extends PhysicsObject{
     public void debugRender(){
         Debug.print(gameScreen,"Angular Vel: " +body.getAngularVelocity());
         Debug.print(gameScreen,"Body Angle: " + getBodyAngle());
+        Debug.print(gameScreen,"(Cos, sin): (" + MathUtils.cosDeg(getBodyAngle()) +", "+ MathUtils.sinDeg(getBodyAngle()) +")");
+        Debug.print(gameScreen,position.x + ", " + position.y );
     }
 
     private void readInput(){
-        float cosx = MathUtils.cosDeg(body.getAngle()*MathUtils.radiansToDegrees);
-        float siny = MathUtils.sinDeg(body.getAngle()*MathUtils.radiansToDegrees);
-        if (Gdx.input.isKeyPressed(Input.Keys.W) && vel.x > -MAX_VELOCITY) {
+        float cosx = MathUtils.cosDeg(getBodyAngle());
+        float siny = MathUtils.sinDeg(getBodyAngle());
+        if ((Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) && vel.x > -MAX_VELOCITY) {
             body.applyForceToCenter(50*cosx, 50*siny, true);
+            reversing = false;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.S) && vel.x < MAX_VELOCITY) {
+        if ((Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) && vel.x > -MAX_VELOCITY) {
             body.applyForceToCenter(-10*cosx, -10f*siny, true);
+            reversing = true;
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.A) && vel.x > -MAX_VELOCITY) {
+        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             body.applyAngularImpulse(0.1f, true);
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.D) && vel.x < MAX_VELOCITY) {
+        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             body.applyAngularImpulse(-0.1f,true);
         }
     }
