@@ -47,7 +47,7 @@ public class GameScreen implements Screen {
             Car car = (Car) body.getUserData();
 
             if(car != null){
-                car.pos = body.getPosition();
+                car.SetPosition(body.getPosition());
                 car.rotation = MathUtils.radiansToDegrees * body.getAngle();
             }
         }
